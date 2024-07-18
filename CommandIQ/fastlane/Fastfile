@@ -1,0 +1,122 @@
+require 'fileutils'
+require 'csv'
+fastlane_require 'rake'
+fastlane_require 'xcodeproj'
+fastlane_require 'git'
+$xcode_version ||= '15.1'
+default_platform(:ios)
+$project_dir ||= File.expand_path "#{Dir.pwd}/.."
+$fastlane_dir ||= "#{$project_dir}/fastlane"
+
+
+lane :run_build_ios do |options|
+    run_lint
+    unit_testing
+    generate_coverage
+    generate_csv
+end
+desc "Runs unit tests"
+lane :unit_testing do
+    scan(
+        skip_build: false,                # Skips the build process
+        build_for_testing: false,        # Avoids rebuilding the project for testing
+        workspace: "./.swiftpm/xcode/package.xcworkspace",
+        output_directory: "fastlane/unit_test_output",
+        code_coverage: true,
+        result_bundle: true
+    )
+end
+lane :generate_coverage do
+    xcov_report_dir = "#{$fastlane_dir}/xcov_report"
+        begin
+            FileUtils.rm_rf("#{xcov_report_dir}")
+        rescue
+            UI.warning "Failed to delete #{xcov_report_dir} folder"
+    end
+
+    xcov(is_swift_package: true,
+        workspace: "./.swiftpm/xcode/package.xcworkspace",
+        markdown_report: true,
+        scheme: "CalixIOSUX",
+        exclude_targets: "CalixIOSUXTests",
+        output_directory: xcov_report_dir,
+        ignore_file_path: "#{$fastlane_dir}/.xcovignore",
+        json_report: true
+    )
+end
+
+lane :run_lint do
+  project_swiftlint_config_path = "#{$project_dir}/.swiftlint.yml"
+  lint_report_dir = "#{$fastlane_dir}/swiftlint.html"
+
+  # Run SwiftLint
+  swiftlint(
+    mode: :lint,      # SwiftLint mode: :lint (default) or :autocorrect
+    # output_file: "swiftlint.result.json", # The path of the output file (optional)
+    config_file: project_swiftlint_config_path,     # The path of the configuration file (optional)
+    raise_if_swiftlint_error: true,      # Allow fastlane to raise an error if swiftlint fails
+    ignore_exit_status: true,    # Allow fastlane to continue even if SwiftLint returns a non-zero exit status
+    output_file: lint_report_dir,
+    reporter: "html",
+    strict: false
+)
+end
+
+lane :generate_csv do
+  # Parse JSON report and convert to CSV
+  json_report_path = "#{$fastlane_dir}/xcov_report/report.json"
+
+  # json_report_path = "./fastlane/xcov_report/report.json"
+  csv_report_path = "#{$fastlane_dir}/xcov_report/xcov_report.csv"
+  # "./fastlane/xcov_report/xcov_report.csv"
+  
+  if File.exist?(json_report_path)
+    json_data = JSON.parse(File.read(json_report_path))
+
+    CSV.open(csv_report_path, "wb") do |csv|
+
+      # Add headline
+      # csv << []
+      csv << ["Code Coverage Report"]
+      csv << []
+      # csv << [] # Add a blank line
+
+      # csv << ["Total Coverage Percentage "]
+      # csv << [ "#{json_data['coverage']*100}%"]
+      # csv << [target['name'], "#{target['coverage']*100}%"]
+      total_coverage = json_data['coverage'] * 100
+      csv << ["Total Coverage Percentage ", "#{format('%.2f', total_coverage)}%"]
+      csv << []
+
+      # csv << ["Target", "Coverage Percentage"]
+
+      json_data['targets'].each do |target|
+        total_target_coverage = target['coverage'] * 100
+
+        csv << [target['name'], "#{format('%.2f', total_target_coverage)}%"]
+      end
+
+      csv << [] # Add a blank line
+
+      # Assuming the JSON structure, customize the headers and fields as needed
+      csv << ["Target", "File Name", "File Coverage","Function Name", "Function Coverage"]
+      json_data['targets'].each do |target|
+        target['files'].each do |file|
+          # Add file-level coverage
+          file_coverage = file['coverage'] * 100
+          csv << [target['name'], file['name'], "#{format('%.2f', file_coverage)}%"]
+          # Add function-level coverage
+          file['functions'].each do |function|
+            function_coverage = function['coverage'] * 100
+            csv << [nil, nil, nil, function['name'], "#{format('%.2f', function_coverage)}%"]
+          end
+        end
+      end
+    end
+  else
+    UI.error("JSON report not found at #{json_report_path}")
+  end
+end
+
+    
+    
