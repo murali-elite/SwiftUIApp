@@ -7,128 +7,81 @@
 
 import SwiftUI
 
-struct LoginScreenView: View {
-    @State var email: String = ""
-    @State var password: String = ""
-    @State var location: String = "USA"
-    @State var isPasswordHidden: Bool = true
-    
-    @State var isPopupPresented = false
-    @State var detentHeight: CGFloat = 0
-    @State var isScrollable: Bool = false
-    
-    var screenHeight = UIScreen.main.bounds.height
-    
-    var body: some View {
-        if #available(iOS 16.0, *) {
-            NavigationStack {
-                content
+/// A view representing the login screen, containing fields for email, password, and location,
+/// as well as buttons for logging in and signing up.
+public struct LoginScreenView: View {
+    // MARK: - Properties
+
+    @State public var email: String = ""
+    @State public var password: String = ""
+    @State public var location: String = "USA"
+    @State public var isPasswordHidden: Bool = true
+    private let locations: [String] = ["USA", "Canada", "France", "Germany", "Africa"]
+
+    private enum Constants {
+        static let verticalSpacing: CGFloat = 10
+        static let bottomPadding: CGFloat = 10
+    }
+
+    // MARK: - Body
+
+    /// The main content view for the `LoginScreenView`.
+    public var body: some View {
+            if #available(iOS 16.0, *) {
+                NavigationStack {
+                    content
+                }
+            } else {
+                NavigationView {
+                    content
+                }
             }
+    }
+
+    @ViewBuilder
+    func ignoredSafeAreaBackgroundColor(_ name: String) -> some View {
+        if #available(iOS 14.0, *) {
+            Color(name, bundle: .module)
+                .ignoresSafeArea()
         } else {
-            NavigationView {
-                content
-            }
+            Color(name, bundle: .module)
+                .edgesIgnoringSafeArea(.all)
         }
-   
     }
-    
+
+    // MARK: - Content
+
+    /// The main content view builder for the `LoginScreenView`.
+    @ViewBuilder
     private var content: some View {
-        ScrollView {
-            VStack(spacing: 10) {
-                WelcomeBannerView(title: "Welcome", secondaryTitle: "CommandIQ")
-                    .padding(.bottom, 10)
-                
-                LoginTitleView(
-                    title:  "Login",
-                    subTitle: "Everything you need to secure and control your home network and connected devices."
-                )
-                
-                // Input TextFields
-                VStack(spacing: 30) {
-                    if #available(iOS 15.0, *) {
-                        emailTextField()
-                            .foregroundStyle(.white)
-                    } else {
-                        emailTextField()
-                    }
-                    VStack {
-                        PasswordTextFieldView(title: "Password",
-                                              password: $password)
-                        Button(action: {
-                            isPopupPresented.toggle()
-                        }) {
-                            ForgotPasswordView(text: "Forgot Password?",
-                                               textColor: .white,
-                                               lineColor: .white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        //                            .sheet(isPresented: $isPopupPresented, content: {
-                        //                                ForgotPasswordPopUpView()
-                        //                                    .readHeight()
-                        //                                    .onPreferenceChange(HeightPreferenceKey.self, perform: { height in
-                        //                                        if let height = height {
-                        //                                            detentHeight = height
-                        //                                        }
-                        //                                    })
-                        //                                    .presentationDetents([.height(detentHeight)])
-                        //                                    .presentationDragIndicator(.visible)
-                        //                            })
-                    }
-                    
-                    if #available(iOS 15.0, *) {
-                        locationTextField()
-                            .foregroundStyle(.white)
-                    } else {
-                        locationTextField()
-                    }
+        ZStack {
+            Color("AppPrimaryColor", bundle: .module)
+                .ignoredSafeAreaBackgroundColor()
+            ScrollView {
+                VStack(spacing: Constants.verticalSpacing) {
+                    WelcomeBannerView(title: "Welcome", secondaryTitle: "CommandIQ")
+                        .padding(.bottom, Constants.bottomPadding)
+
+                    LoginTitleView(
+                        title: "Login",
+                        subTitle: "Everything you need to secure and control your home network and connected devices."
+                    )
+
+                    // Input TextFields
+                    LoginContainerView(
+                        email: $email,
+                        password: $password,
+                        location: $location,
+                        isPasswordHidden: $isPasswordHidden,
+                        locations: locations
+                    )
+
+                    // Container for Login, Signup title, and Signup Button
+                    LoginSignUpButtonContainerView()
                 }
-                .padding(.vertical)
-                
-                
-                if #available(iOS 15.0, *) {
-                    loginButtonView()
-                        .foregroundStyle(.white)
-                } else {
-                    loginButtonView()
-                }
-                
-                SignUpButtonView(heading: "Don’t have a Login?",
-                                 buttonText: "Sign Up",
-                                 headingColor: .white,
-                                 buttonTextColor: .white,
-                                 borderColor: .white)
+                .padding()
             }
-            .padding()
         }
-        .background(Color("primary"))
-    }
-    
-    @ViewBuilder
-    private func emailTextField() -> some View {
-        TextField("", text: $email)
-            .foregroundColor(.white)
-            .textFieldViewModifier(title: "Email",
-                                   titleColor: .white,
-                                   tintColor: .white)
-    }
-    
-    
-    @ViewBuilder
-    private func locationTextField() -> some View {
-        TextField("", text: $location)
-            .foregroundColor(.white)
-            .dropDownViewModifier(title: "Location",
-                                  titleColor: .white,
-                                  tintColor: .white)
-    }
-    
-    @ViewBuilder
-    private func loginButtonView() -> some View {
-        Button("Log In") {
-            //
-        }
-        .foregroundColor(.blue)
-        .buttonStyleViewModifier(backgroundColor: .white)
     }
 }
 
@@ -136,4 +89,21 @@ struct LoginScreenView: View {
     LoginScreenView()
 }
 
+public struct IgnoredSafeAreaBackgroundColor: ViewModifier {
 
+    public func body(content: Content) -> some View {
+        if #available(iOS 14.0, *) {
+            content
+                .ignoresSafeArea()
+        } else {
+            content
+                .edgesIgnoringSafeArea(.all)
+        }
+    }
+}
+
+extension Color {
+    func ignoredSafeAreaBackgroundColor() -> some View {
+        modifier(IgnoredSafeAreaBackgroundColor())
+    }
+}

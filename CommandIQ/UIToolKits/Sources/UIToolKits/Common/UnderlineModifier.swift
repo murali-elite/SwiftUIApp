@@ -7,11 +7,10 @@
 
 import SwiftUI
 
-
 public struct UnderlineModifier: ViewModifier {
     var backgroundColor: Color
 
-    init(backgroundColor: Color) {
+    public init(backgroundColor: Color) {
         self.backgroundColor = backgroundColor
     }
 

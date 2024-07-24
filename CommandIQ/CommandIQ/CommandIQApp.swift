@@ -12,7 +12,7 @@ import SwiftUI
 struct CommandIQApp: App {
     var body: some Scene {
         WindowGroup {
-            LoginView()
+          LoginView()
         }
     }
 }

@@ -8,7 +8,6 @@
 import SwiftUI
 import UIToolKits
 
-
 struct WelcomeView: View {
     @State private var currentTab = 0
     @State private var tabViewHeight: CGFloat = 0
@@ -35,6 +34,10 @@ struct WelcomeView: View {
                 
                 VStack {
                     WelcomeBannerView(title: "Welcome", secondaryTitle: "CommandIQ")
+                    
+                    LandingAnimationView(items: [])
+                    
+                    
                     TabView(selection: $currentTab) {
                         ForEach(0..<sliderImages.count, id: \.self) { index in
                             SlidingBannerImageView(image: Image(sliderImages[index]),
@@ -109,4 +112,20 @@ struct SlidingBannerImageView: View {
 
 #Preview {
     WelcomeView()
+}
+
+
+// MARK: - Preview
+
+struct LandingAnimationView_Previews: PreviewProvider {
+    static var previews: some View {
+        LandingAnimationView(items: [])
+    }
+}
+
+
+private struct LandingBannerItem {
+    var title: String
+    var description: String
+    var image: Image
 }

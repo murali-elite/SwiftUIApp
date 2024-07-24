@@ -20,6 +20,9 @@ let package = Package(
     targets: [
         .target(
             name: "UIToolKits",
+            resources: [
+                .process("Assets.xcassets"),
+            ],
             plugins: [
                 .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
             ]),

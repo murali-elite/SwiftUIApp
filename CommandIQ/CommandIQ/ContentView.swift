@@ -14,7 +14,8 @@ struct ContentView: View {
             Color("primary")
                 .ignoresSafeArea()
             VStack {
-                WelcomeBannerView(title: "", secondaryTitle: "")
+               // WelcomeBannerView(title: "", secondaryTitle: "")
+                LandingAnimationView(items: [])
                 Spacer()
             }
             .padding()
@@ -23,6 +24,7 @@ struct ContentView: View {
         
     }
 }
+
 
 #Preview {
     ContentView()
