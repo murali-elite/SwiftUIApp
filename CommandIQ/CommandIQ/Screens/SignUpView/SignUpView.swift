@@ -140,3 +140,10 @@ struct SignUpBottomButtonView: View {
 //        print("Selected", index, element)
 //    }
 //}
+
+
+
+
+
+
+

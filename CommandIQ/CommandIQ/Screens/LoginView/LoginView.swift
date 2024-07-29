@@ -13,6 +13,7 @@ struct LoginView: View {
     @State var password: String = ""
     @State var location: String = "USA"
     @State var isPasswordHidden: Bool = true
+    @State public var isPopupPresented: Bool = false
     
     private var locations: [String] = ["USA", "Canada", "France", "Germany", "Africa"]
 
@@ -31,7 +32,7 @@ struct LoginView: View {
                     LoginContainerView(email: $email,
                                        password: $password,
                                        location: $location,
-                                       isPasswordHidden: $isPasswordHidden,
+                                       isPasswordHidden: $isPasswordHidden, isPopupPresented: $isPopupPresented,
                                        locations: locations)
                     
                     
@@ -41,6 +42,7 @@ struct LoginView: View {
                     
                 }
                 .padding()
+                .background(.blue)
             
         }
     }

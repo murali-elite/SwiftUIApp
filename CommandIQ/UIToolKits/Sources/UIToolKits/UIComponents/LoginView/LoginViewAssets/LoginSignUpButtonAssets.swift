@@ -8,39 +8,46 @@
 import SwiftUI
 
 /// Protocol defining the assets for login and sign-up buttons, such as colors.
-public protocol LoginSignUpButtonAssets {
+public protocol LoginSignUpButtonAssetsProtocol {
     /// The foreground color of the login button.
-    var loginForgroundColor: Color { get set }
+    var primaryForgroundColor: Color { get set }
 
     /// The background color of the login button.
-    var loginBackgroundColor: Color { get set }
+    var primaryBackgroundColor: Color { get set }
+    
+    /// The border color of the sign-up button.
+    var primaryBorderColor: Color { get set }
 
     /// The color of the heading text.
     var headingTextColor: Color { get set }
 
     /// The border color of the sign-up button.
-    var signUpBorderColor: Color { get set }
+    var secondayBorderColor: Color { get set }
 
     /// The foreground color of the sign-up button.
-    var signUpForgroundColor: Color { get set }
+    var secondayForgroundColor: Color { get set }
+    
+    
 }
 
 /// Struct implementing the `LoginSignUpButtonAssets` protocol, providing default colors for login and sign-up buttons.
-public struct LoginSignUpButtonColors: LoginSignUpButtonAssets {
+public struct LoginSignUpButtonAssets: LoginSignUpButtonAssetsProtocol {
+    public var primaryBorderColor: Color
+    
     /// The foreground color of the login button.
-    public var loginForgroundColor: Color
+    public var primaryForgroundColor: Color
 
     /// The background color of the login button.
-    public var loginBackgroundColor: Color
+    public var primaryBackgroundColor: Color
 
     /// The color of the heading text.
     public var headingTextColor: Color
 
     /// The border color of the sign-up button.
-    public var signUpBorderColor: Color
+    public var secondayBorderColor: Color
 
     /// The foreground color of the sign-up button.
-    public var signUpForgroundColor: Color
+    public var secondayForgroundColor: Color
 
     /// Initializes a new instance of `LoginSignUpButtonColors`.
     ///
@@ -50,15 +57,17 @@ public struct LoginSignUpButtonColors: LoginSignUpButtonAssets {
     ///   - headingTextColor: The color of the heading text. Defaults to white.
     ///   - signUpBorderColor: The border color of the sign-up button. Defaults to white.
     ///   - signUpForgroundColor: The foreground color of the sign-up button. Defaults to white.
-    public init(loginForgroundColor: Color = .appPrimaryColor,
-                loginBackgroundColor: Color = .clear,
+    public init(primaryBorderColor: Color = .clear,
+                primaryForgroundColor: Color = .appPrimaryColor,
+                primaryBackgroundColor: Color = .clear,
                 headingTextColor: Color = .white,
-                signUpBorderColor: Color = .white,
-                signUpForgroundColor: Color = .white) {
-        self.loginForgroundColor = loginForgroundColor
-        self.loginBackgroundColor = loginBackgroundColor
+                secondayBorderColor: Color = .white,
+                secondayForgroundColor: Color = .white) {
+        self.primaryBorderColor = primaryBorderColor
+        self.primaryForgroundColor = primaryForgroundColor
+        self.primaryBackgroundColor = primaryBackgroundColor
         self.headingTextColor = headingTextColor
-        self.signUpBorderColor = signUpBorderColor
-        self.signUpForgroundColor = signUpForgroundColor
+        self.secondayBorderColor = secondayBorderColor
+        self.secondayForgroundColor = secondayForgroundColor
     }
 }

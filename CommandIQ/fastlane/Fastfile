@@ -37,8 +37,8 @@ lane :generate_coverage do
     xcov(is_swift_package: true,
         workspace: "./.swiftpm/xcode/package.xcworkspace",
         markdown_report: true,
-        scheme: "CalixIOSUX",
-        exclude_targets: "CalixIOSUXTests",
+        scheme: "CommandIQ",
+        exclude_targets: "CommandIQTests",
         output_directory: xcov_report_dir,
         ignore_file_path: "#{$fastlane_dir}/.xcovignore",
         json_report: true

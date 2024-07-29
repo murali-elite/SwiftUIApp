@@ -16,6 +16,7 @@ public struct LoginScreenView: View {
     @State public var password: String = ""
     @State public var location: String = "USA"
     @State public var isPasswordHidden: Bool = true
+    @State public var isPopupPresented = false
     private let locations: [String] = ["USA", "Canada", "France", "Germany", "Africa"]
 
     private enum Constants {
@@ -29,24 +30,13 @@ public struct LoginScreenView: View {
     public var body: some View {
             if #available(iOS 16.0, *) {
                 NavigationStack {
-                    content
+                   // content
                 }
             } else {
                 NavigationView {
-                    content
+                   // content
                 }
             }
-    }
-
-    @ViewBuilder
-    func ignoredSafeAreaBackgroundColor(_ name: String) -> some View {
-        if #available(iOS 14.0, *) {
-            Color(name, bundle: .module)
-                .ignoresSafeArea()
-        } else {
-            Color(name, bundle: .module)
-                .edgesIgnoringSafeArea(.all)
-        }
     }
 
     // MARK: - Content
@@ -55,8 +45,8 @@ public struct LoginScreenView: View {
     @ViewBuilder
     private var content: some View {
         ZStack {
-            Color("AppPrimaryColor", bundle: .module)
-                .ignoredSafeAreaBackgroundColor()
+//            Color(.red)
+//                .ignoredSafeAreaBackgroundColor()
             ScrollView {
                 VStack(spacing: Constants.verticalSpacing) {
                     WelcomeBannerView(title: "Welcome", secondaryTitle: "CommandIQ")
@@ -72,7 +62,7 @@ public struct LoginScreenView: View {
                         email: $email,
                         password: $password,
                         location: $location,
-                        isPasswordHidden: $isPasswordHidden,
+                        isPasswordHidden: $isPasswordHidden, isPopupPresented: $isPopupPresented,
                         locations: locations
                     )
 

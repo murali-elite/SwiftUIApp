@@ -63,10 +63,45 @@ public struct ForgotPasswordPopUpView: View {
     }
 
     // MARK: - Properties
-    var assets: ForgotPasswordAsset = ForgotPasswordColors()
-    @State var email: String = ""
-    @State var location: String = "USA"
-    var locations: [String] = ["USA", "Canada", "UK"]
+
+    /// An object that provides assets used in the reset password view.
+    public var assets: ForgotPasswordAsset
+
+    /// A binding to the email address input by the user.
+    @Binding public var email: String
+
+    /// A binding to the location input by the user.
+    @Binding public var location: String
+
+    /// A list of location options to display in the dropdown.
+    public var locations: [String]
+
+    /// A closure that is called when a location is selected.
+    public var handler: SelectedElementClouser
+
+    // MARK: - Initializer
+
+    /// Initializes a new instance of the `ForgotPasswordPopUpView`.
+    ///
+    /// - Parameters:
+    ///   - email: A binding to the email address input by the user.
+    ///   - location: A binding to the location input by the user.
+    ///   - locations: A list of location options to display in the dropdown.
+    ///   - assets: An object that provides assets used in the reset password view. Defaults to `ResetPasswordAssets()`.
+    ///   - handler: A closure that is called when a location is selected.
+    public init(email: Binding<String>,
+                location: Binding<String>,
+                locations: [String],
+                assets: ForgotPasswordAsset = ForgotPasswordColors(),
+                handler: @escaping SelectedElementClouser) {
+        self.assets = assets
+        self._email = email
+        self._location = location
+        self.locations = locations
+        self.handler = handler
+    }
+
+    // MARK: - Body
 
     /// The content and behavior of the `ForgotPasswordPopUpView`.
     public var body: some View {
@@ -110,6 +145,9 @@ public struct ForgotPasswordPopUpView: View {
 
     // MARK: - Private Methods
 
+    /// Creates the description text for the reset password view.
+    ///
+    /// - Returns: A view displaying the description text with styling.
     @ViewBuilder
     private func resetDescriptionText() -> some View {
         Text(LoginResetPageString.resetPasswordDescription.localized())
@@ -117,6 +155,7 @@ public struct ForgotPasswordPopUpView: View {
             .foregroundColor(.black.opacity(Constants.colorOpacity))
     }
 }
+
 
 /// A view containing the submit and cancel buttons for the reset password popup.
 struct ResetActionsButtonView: View {
@@ -148,3 +187,6 @@ struct ResetActionsButtonView: View {
         }
     }
 }
+
+
+

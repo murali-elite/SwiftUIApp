@@ -11,12 +11,12 @@ import UIToolKits
 struct ContentView: View {
     var body: some View {
         ZStack {
-            Color("primary")
-                .ignoresSafeArea()
+            
             VStack {
                // WelcomeBannerView(title: "", secondaryTitle: "")
-                LandingAnimationView(items: [])
-                Spacer()
+                LoginTitleView(title: "Hello", subTitle: "Hello")
+                   
+               // Spacer()
             }
             .padding()
             

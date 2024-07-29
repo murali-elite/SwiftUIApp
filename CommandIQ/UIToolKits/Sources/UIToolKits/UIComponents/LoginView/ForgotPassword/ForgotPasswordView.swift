@@ -1,6 +1,6 @@
 //
-//  SwiftUIView.swift
-//  
+//  ForgotPasswordView.swift
+//
 //
 //  Created by Murali moorthy on 7/17/24.
 //
@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// A view that displays a forgot password link with customizable text and colors.
-public struct ForgotPasswordView: View {
+public struct UnderlinedLablView: View {
 
     // MARK: - Constants
     private enum Constants {
@@ -70,5 +70,14 @@ public struct ForgotPasswordView: View {
 }
 
 #Preview {
-    ForgotPasswordView(text: "Forgot Password?")
+    UnderlinedLablView(text: "Forgot Password?")
+}
+
+
+public struct UnderlinedLabelModifier: ViewModifier {
+    
+    public func body(content: Content) -> some View {
+        content
+            .underlined(.red)
+    }
 }

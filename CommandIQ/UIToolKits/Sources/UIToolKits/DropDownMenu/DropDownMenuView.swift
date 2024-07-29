@@ -20,7 +20,7 @@ public struct DropDownMenuView: View {
     let elements: [String]
 
     var textColor: Color = .black
-    var font: Font = .system(size: 14, weight: .regular)
+    var font: Font = .system(size: 30, weight: .regular)
 
     let selectedElement: (Int, String) -> Void
 
@@ -44,11 +44,11 @@ public struct DropDownMenuView: View {
             Picker(selection: $selectedItem) {
                 ForEach(elements, id: \.self) { element in
                     Text(element)
-                        .font(font)
-                        .foregroundColor(textColor)
+                        .foregroundColor(.red)
                 }
             } label: {
                 titleText(elements[selectedIndex])
+                    .foregroundColor(.red)
             }
             .onAppear {
                 guard let index = elements.firstIndex(where: {$0 == selectedItem}) else {
@@ -57,6 +57,7 @@ public struct DropDownMenuView: View {
                 }
                 selectedIndex = index
             }
+            //.foregroundColor(.black)
             .colorMultiply(.black)
             .frame(maxWidth: .infinity, alignment: .leading)
             .pickerStyle(.automatic)
@@ -67,7 +68,7 @@ public struct DropDownMenuView: View {
     private func titleText(_ text: String) -> some View {
         Text(text)
             .font(font)
-            .foregroundColor(textColor)
+            .foregroundColor(.red)
             .frame(maxWidth: .infinity, minHeight: Constants.buttonHeight, alignment: .leading)
     }
 }

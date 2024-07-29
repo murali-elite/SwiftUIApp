@@ -13,6 +13,7 @@ struct LoginTestingView: View {
     @State var password: String = ""
     @State var location: String = "USA"
     @State var isPasswordHidden: Bool = true
+    @State var isPopupPresented: Bool = false
     
     private var locations: [String] = ["USA", "Canada", "France", "Germany", "Africa"]
     
@@ -48,7 +49,7 @@ struct LoginTestingView: View {
                     LoginContainerView(email: $email,
                                        password: $password,
                                        location: $location,
-                                       isPasswordHidden: $isPasswordHidden,
+                                       isPasswordHidden: $isPasswordHidden, isPopupPresented: $isPopupPresented,
                                        locations: locations)
                     .padding()
                     .background(.blue)
@@ -77,13 +78,94 @@ struct LoginTestingView: View {
                 
                 
                 
+                
             }
+            
+           
+
+                VStack {
+                    PasswordTextFieldView(title: "Password",
+                                          password: $password,
+                                          titleColor: .black,
+                                          tintColor: .black)
+
+                    if #available(iOS 15.0, *) {
+                        forgotPasswordView()
+                            .accessibilityAddTraits(.isButton)
+                    } else {
+                        forgotPasswordView()
+                    }
+                }
+            
+            LoginContainerView(email: $email,
+                               password: $password,
+                               location: $location,
+                               isPasswordHidden: $isPasswordHidden, isPopupPresented: $isPopupPresented,
+                               locations: locations)
+            .padding()
+            .background(.black)
+            .sheet(isPresented: $isPopupPresented, content: {
+                ForgotPasswordPopUpView(email: $email, location: $location, locations: locations, handler: {_,_ in})
+                    .readHeight()
+                    .onPreferenceChange(HeightPreferenceKey.self) { height in
+                        if let height = height {
+                          //  detentHeight = height
+                        }
+                    }
+                    .presentationDetents([.medium])
+                   // .presentationDetents([.height(detentHeight)])
+                    .presentationDragIndicator(.visible)
+            })
+            
         }
+    
         .navigationTitle("Navigation")
         
+        
+        
+        
     }
+    
+    @ViewBuilder
+    private func forgotPasswordView() -> some View {
+        Text("Forgot Password?")
+            .underlined(.black)
+            .accessibility(addTraits: .isButton)
+            .foregroundColor(.black)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .onTapGesture {
+                isPopupPresented.toggle()
+            }
+    }
+    
+//    private func forgotPasswordPopUpView() -> some View {
+//
+//        .sheet(isPresented: $isPopupPresented) {
+//            if #available(iOS 16.0, *) {
+//                ForgotPasswordPopUpView()
+//                    .readHeight()
+//                    .onPreferenceChange(HeightPreferenceKey.self) { height in
+//                        if let height = height {
+//                            detentHeight = height
+//                        }
+//                    }
+//                    .presentationDetents([.height(detentHeight)])
+//                    .presentationDragIndicator(.visible)
+//            } else {
+//                ForgotPasswordPopUpView()
+//                    .readHeight()
+//                    .onPreferenceChange(HeightPreferenceKey.self) { height in
+//                        if let height {
+//                            detentHeight = height
+//                        }
+//                    }
+//            }
+//        }
+//    }
 }
 
 #Preview {
     LoginTestingView()
 }
+
+

@@ -32,6 +32,8 @@ public struct SignUpButtonView: View {
 
     /// The color of the button border.
     var borderColor: Color
+    
+    var action: () -> Void
 
     // MARK: - Initializer
 
@@ -42,12 +44,13 @@ public struct SignUpButtonView: View {
     ///   - buttonText: The text of the button.
     ///   - headingColor: The color of the heading text.
     ///   - buttonTextColor: The color of the button text.
-    public init(heading: String, buttonText: String, headingColor: Color, buttonTextColor: Color, borderColor: Color) {
+    public init(heading: String, buttonText: String, headingColor: Color, buttonTextColor: Color, borderColor: Color, action: @escaping ()->Void) {
         self.heading = heading
         self.buttonText = buttonText
         self.headingColor = headingColor
         self.buttonTextColor = buttonTextColor
         self.borderColor = borderColor
+        self.action = action
     }
 
     // MARK: - Body
@@ -63,7 +66,7 @@ public struct SignUpButtonView: View {
             }
 
             Button {
-                // Add action here
+                action()
             } label: {
                 if #available(iOS 15.0, *) {
                     buttonHeadingText()
@@ -97,5 +100,20 @@ public struct SignUpButtonView: View {
             .font(.system(size: Constants.fontSize, weight: Constants.fontWeight))
             .buttonStyleViewModifier(borderColor: borderColor)
             .foregroundColor(buttonTextColor)
+    }
+}
+
+
+struct LabledButtonViewModifier: ViewModifier {
+    
+    var text: String
+    var textColot: Color
+    var font: Font
+ 
+    func body(content: Content) -> some View {
+        VStack {
+            Text("Don't Have a Account?")
+            content
+        }
     }
 }
